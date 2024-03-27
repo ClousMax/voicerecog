@@ -1,10 +1,28 @@
 from tkinter import *
 from tkinter import ttk
+import speech_recognition as sr
+import pyttsx3 
+import voiceRecog #Из Файла
+#перевод
+from googletrans import Translator, constants
+from pprint import pprint
+
+
+
+translator = Translator()
 def finish():
     root.destroy()
     print("Закрыто приложение") 
+
 def click():
     print("Hello")
+    text = voiceRecog.main()
+    editor1.insert(END,text)
+
+def translate():
+    textToTranslate = editor1.get('1.0' ,END)
+    result = translator.translate(textToTranslate, src='ru', dest='en')
+    editor2.replace('1.0',END,result.text) #Результат в виде списка с данными, из него нужен только тект
 
 root = Tk()     # создаем корневой объект - окно
 root.title("Приложения для текста")     # устанавливаем заголовок окна
@@ -14,16 +32,17 @@ root.minsize(300,300)
 label = Label(text="Распознавание речи") # создаем текстовую метку
 label.pack()    # размещаем метку в окне
 
-btn = ttk.Button(text="Click", command=click)
+btn = ttk.Button(text="Записать", command=click)
 btn.pack()
 
-frame = ttk.Frame(borderwidth=1, relief=SOLID, padding=[8, 10])
-name_label = ttk.Label(frame,text="Первый фрейм")
-name_label.pack(anchor=W)
+btn = ttk.Button(text="Перевод",command=translate)
+btn.pack()
 
-name_frame=ttk.Entry(frame)
-name_frame.pack(anchor=W)
+editor1 = Text(wrap='word',width=30) #Первый текст
+editor1.pack(side=LEFT)
 
-frame.pack(anchor=W,side=LEFT, padx=5,pady=5)
+editor2 = Text(wrap='word',width=30) #Второй Текст
+editor2.pack(side=LEFT)
+
 root.protocol("WM_DELETE_WINDOW", finish)
 root.mainloop()
